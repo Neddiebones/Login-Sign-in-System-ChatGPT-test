@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .form-toggle {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button.active {
+            background-color: #008CBA;
+        }
+
+        button.active:hover {
+            background-color: #007B9E;
+        }
+
+        .form h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Homepage Style */
+        .home-container {
+            display: none;
+            background-color: #fff;
+            width: 100%;
+            height: 100vh;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .home-container h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .home-container p {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+        }
+
+        .home-container button {
+            background-color: #ff6347;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .home-container button:hover {
+            background-color: #e55347;
+        }
+
+        /* Guess the Number Game */
+        .game-container {
+            margin-top: 20px;
+            padding: 30px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .game-container h2 {
+            margin-bottom: 15px;
+        }
+
+        .game-container input {
+            width: 80%;
+            margin-top: 10px;
+        }
+
+        .game-container button {
+            width: 40%;
+            margin-top: 10px;
+        }
+
+        .game-container .clue {
+            font-size: 1rem;
+            color: #555;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="form-toggle">
+                <button class="login-btn active" onclick="toggleForm('login')">Login</button>
+                <button class="signup-btn" onclick="toggleForm('signup')">Sign Up</button>
+            </div>
+            <form id="login-form" class="form" onsubmit="handleLogin(event)">
+                <h2>Login</h2>
+                <input type="text" placeholder="Username" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signup-form" class="form hidden" onsubmit="handleSignUp(event)">
+                <h2>Sign Up</h2>
+                <input type="text" placeholder="Username" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="home-container" id="home-container">
+        <h1>Welcome to Your Dashboard</h1>
+        <p>You're successfully logged in. Enjoy your stay!</p>
+        <button onclick="startGame()">Start Guess the Number Game</button>
+
+        <!-- Guess the Number Game Section -->
+        <div class="game-container" id="game-container">
+            <h2>Guess the Number (1-100)</h2>
+            <input type="number" id="user-guess" placeholder="Enter your guess" min="1" max="100">
+            <button onclick="checkGuess()">Guess</button>
+            <p class="clue" id="clue"></p>
+        </div>
+    </div>
+
+    <script>
+        let secretNumber = 0;
+        let attempts = 0;
+
+        function toggleForm(formType) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const loginBtn = document.querySelector('.login-btn');
+            const signupBtn = document.querySelector('.signup-btn');
+
+            if (formType === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginBtn.classList.add('active');
+                signupBtn.classList.remove('active');
+            } else {
+                signupForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                signupBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            document.querySelector('.container').style.display = 'none';  // Hide login/signup forms
+            document.getElementById('home-container').style.display = 'block';  // Show homepage
+        }
+
+        function handleSignUp(event) {
+            event.preventDefault();
+            document.querySelector('.container').style.display = 'none';  // Hide login/signup forms
+            document.getElementById('home-container').style.display = 'block';  // Show homepage
+        }
+
+        function logout() {
+            document.querySelector('.container').style.display = 'flex';  // Show login/signup forms
+            document.getElementById('home-container').style.display = 'none';  // Hide homepage
+        }
+
+        function startGame() {
+            secretNumber = Math.floor(Math.random() * 100) + 1;  // Random number between 1 and 100
+            attempts = 0;
+            document.getElementById('game-container').style.display = 'block';  // Show game
+            document.getElementById('clue').textContent = '';  // Clear any clues
+        }
+
+        function checkGuess() {
+            const userGuess = document.getElementById('user-guess').value;
+            const clueElement = document.getElementById('clue');
+            attempts++;
+
+            if (userGuess < secretNumber) {
+                clueElement.textContent = `Too low! Try again. Attempts: ${attempts}`;
+            } else if (userGuess > secretNumber) {
+                clueElement.textContent = `Too high! Try again. Attempts: ${attempts}`;
+            } else if (userGuess == secretNumber) {
+                clueElement.textContent = `Correct! The number was ${secretNumber}. It took you ${attempts} attempts.`;
+                setTimeout(startGame, 2000);  // Generate a new number after 2 seconds
+            }
+        }
+    </script>
+</body>
+</html>
